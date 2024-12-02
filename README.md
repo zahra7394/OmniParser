@@ -46,9 +46,22 @@ python gradio_demo.py
 For the model checkpoints on huggingface model hub, please note that icon_detect model is under AGPL license since it is a license inherited from the original yolo model. And icon_caption_blip2 & icon_caption_florence is under MIT license. Please refer to the LICENSE file in the folder of each model: https://huggingface.co/microsoft/OmniParser.
 
 ## Features
-**FastAPI Integration**: Add `app.py` that establishes API endpoints for efficient image processing. 
-- To start the FastAPI server and process images, run `app.py` on the server
-- Send a POST request to `http://<your-server-address>:5000/process`
+### **FastAPI Integration**
+A REST API using FastAPI is developed to process images uploaded by users, analyze them using OmniParser, and return both the processed data and a labeled image. This would enable remote interaction with the processing tool.
+
+1. **Start the Server**  
+   Launch the FastAPI server by running `app.py` on your server:  
+   ```bash
+   python app.py
+   
+2. Send a POST request to `http://<your-server-address>:5000/process`
+
+**Output Format**: The API returns a structured list of detections, each represented as a list of strings in the format `["ID", "Type", "Text", "x1", "y1", "x2", "y2"].`
+- ID: The unique identifier for each detected box.
+- Type: The classification of the detected box, either "Text" or "icon".
+- Text: The label or content associated with the detected box.
+- x1, y1: The coordinates of the top-left corner of the detected box.
+- x2, y2: The coordinates of the bottom-right corner of the detected box.
 
 Here's a Python script that demonstrates how to send an image to the API and handle the response:
 
