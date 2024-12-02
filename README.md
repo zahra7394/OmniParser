@@ -45,6 +45,56 @@ python gradio_demo.py
 ## Model Weights License
 For the model checkpoints on huggingface model hub, please note that icon_detect model is under AGPL license since it is a license inherited from the original yolo model. And icon_caption_blip2 & icon_caption_florence is under MIT license. Please refer to the LICENSE file in the folder of each model: https://huggingface.co/microsoft/OmniParser.
 
+## Features
+**FastAPI Integration**: Add `app.py` that establishes API endpoints for efficient image processing. 
+- To start the FastAPI server and process images, run `app.py` on the server
+- Send a POST request to `http://<your-server-address>:5000/process`
+
+Here's a Python script that demonstrates how to send an image to the API and handle the response:
+
+```python
+import requests
+import base64
+from PIL import Image
+from io import BytesIO
+from os.path import basename
+
+# API endpoint
+url = "http://<your-server-address>:5000/process"
+
+# Path to the image you want to send
+image_path = ""
+image_name = basename(image_path)
+
+# Send the image as a POST request
+with open(image_path, 'rb') as image_file:
+    response = requests.post(
+        url,
+        files={'image': image_file},  # Send the image file here
+        data={'img_name': image_name}  # Send additional form data here
+    )
+
+# Check the response
+if response.status_code == 200:
+    data = response.json()
+    
+    # Get the base64 image from the response
+    base64_image = data['based64_image']
+
+    # Decode the image
+    image_data = base64.b64decode(base64_image)
+    image = Image.open(BytesIO(image_data))
+
+    # Display the image on your local machine
+    image.show()
+
+    print("structured_results:", data["structured_results"])
+else:
+    print(f"Failed to get a response. Status code: {response.status_code}")
+```
+
+
+
 ## 📚 Citation
 Our technical report can be found [here](https://arxiv.org/abs/2408.00203).
 If you find our work useful, please consider citing our work:
